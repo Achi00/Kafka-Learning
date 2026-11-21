@@ -5,6 +5,9 @@
   <Folder Name="/Producers/">
     <Project Path="Kafka.Producer/Kafka.Producer.csproj" />
   </Folder>
+  <Folder Name="/Shared/">
+    <Project Path="Kafka.Shared/Kafka.Shared.csproj" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path="docker-compose.yml" />
   </Folder>
