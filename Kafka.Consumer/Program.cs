@@ -43,16 +43,28 @@ try
         // ConsumerResult is not json
         var cr = consumer.Consume(cts.Token);   // blocks until a message arrives (or cancel)
 
-        var result = JsonSerializer.Deserialize<DriverLocation>(cr.Message.Value);
+        DriverLocation? location;
+        try
+        {
+            location = JsonSerializer.Deserialize<DriverLocation>(cr.Message.Value);
+        }
+        // in case json value is corrupt and throws we will lose offset value commit, so kafka redelivers same message again
+        catch (JsonException ex)
+        {
+            Console.WriteLine($"POISON | partition {cr.Partition.Value} | offset {cr.Offset.Value} | {ex.Message}");
+            // skip it later send to dead-letter topic instead of dropping
+            consumer.StoreOffset(cr);
+            continue;
+        }
 
         // check result
-        if (result is not null)
+        if (location is not null)
         {
             // if not exists in dictionary or timestamp is future thatn current save in dictionary
-            if (!latest.TryGetValue(result.DriverId, out var value) || result.Timestamp > value.Timestamp)
+            if (!latest.TryGetValue(location.DriverId, out var value) || location.Timestamp > value.Timestamp)
             {
-                latest[result.DriverId] = result;
-                Console.WriteLine("APPLIED");
+                latest[location.DriverId] = location;
+                Console.WriteLine($"APPLIED | {location.DriverId} | p{cr.Partition.Value} o{cr.Offset.Value} | {location.Timestamp:HH:mm:ss.fff}");
             }
             else
             {
