@@ -29,12 +29,19 @@ Console.CancelKeyPress += (sender, e) =>
 
 consumer.Subscribe(Topics.DriverLocations);
 
+int i = 0;
+
 try
 {
     while (true)
     {
+        if (i >= 15)
+        {
+            Environment.FailFast("Boom");
+        }
         var cr = consumer.Consume(cts.Token);   // blocks until a message arrives (or cancel)
         Console.WriteLine($"{cr.Message.Key} | partition {cr.Partition.Value} | offset {cr.Offset.Value} | {cr.Message.Value}");
+        i++;
     }
 }
 catch (OperationCanceledException)
