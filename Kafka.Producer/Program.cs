@@ -1,5 +1,6 @@
 ﻿using Confluent.Kafka;
 using Kafka.Shared.Setup;
+using System.Text.Json;
 
 await KafkaConfig.EnsureTopicAsync(KafkaDefaults.BootstrapServers, Topics.DriverLocations, Topics.DriverLocationsPartitions);
 
@@ -15,12 +16,15 @@ while (true)
     var random = new Random();
     var driverKey = $"driver-{random.Next(1, 6)}";
 
+
     var lat = random.NextDouble() * 100;
     var lng = random.NextDouble() * 100;
 
-    var value = $"{lat},{lng}";
+    var driverLocation = new DriverLocation(driverKey, lat, lng, DateTimeOffset.UtcNow);
 
-    var res = await producer.ProduceAsync(Topics.DriverLocations, new Message<string, string> { Key = driverKey, Value = value });
+    var json = JsonSerializer.Serialize(driverLocation);
+
+    var res = await producer.ProduceAsync(Topics.DriverLocations, new Message<string, string> { Key = driverKey, Value = json });
 
     Console.WriteLine(res.Message.Key);
     Console.WriteLine(res.Partition.Value);

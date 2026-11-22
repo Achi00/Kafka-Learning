@@ -9,7 +9,8 @@ var config = new ConsumerConfig
     GroupId = args[0],
     AutoOffsetReset = AutoOffsetReset.Earliest,
     EnableAutoCommit = true,
-    EnableAutoOffsetStore = true,
+    // making EnableAutoOffsetStore true can cause message loss if it failed midway
+    EnableAutoOffsetStore = false,
 };
 
 
