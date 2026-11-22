@@ -41,6 +41,7 @@ try
         }
         var cr = consumer.Consume(cts.Token);   // blocks until a message arrives (or cancel)
         Console.WriteLine($"{cr.Message.Key} | partition {cr.Partition.Value} | offset {cr.Offset.Value} | {cr.Message.Value}");
+        Thread.Sleep(1000);
         i++;
     }
 }
