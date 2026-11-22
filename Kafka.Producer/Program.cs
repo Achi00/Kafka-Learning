@@ -13,7 +13,7 @@ using var producer = new ProducerBuilder<string, string>(config).Build();
 while (true)
 {
     var random = new Random();
-    var driverKey = $"driver-{random.Next(1, 5)}";
+    var driverKey = $"driver-{random.Next(1, 6)}";
 
     var lat = random.NextDouble() * 100;
     var lng = random.NextDouble() * 100;
