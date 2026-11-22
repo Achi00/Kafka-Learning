@@ -11,16 +11,17 @@ var config = new ProducerConfig
 
 using var producer = new ProducerBuilder<string, string>(config).Build();
 
+var random = new Random();
+
 while (true)
 {
-    var random = new Random();
     var driverKey = $"driver-{random.Next(1, 6)}";
 
 
     var lat = random.NextDouble() * 100;
     var lng = random.NextDouble() * 100;
 
-    var driverLocation = new DriverLocation(driverKey, lat, lng, DateTimeOffset.UtcNow);
+    var driverLocation = new DriverLocation(Guid.NewGuid(), driverKey, lat, lng, DateTimeOffset.UtcNow);
 
     var json = JsonSerializer.Serialize(driverLocation);
 
