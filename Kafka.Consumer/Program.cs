@@ -6,7 +6,7 @@ await KafkaConfig.EnsureTopicAsync(KafkaDefaults.BootstrapServers, Topics.Driver
 var config = new ConsumerConfig
 {
     BootstrapServers = KafkaDefaults.BootstrapServers,
-    GroupId = "dispatch",
+    GroupId = args[0],
     AutoOffsetReset = AutoOffsetReset.Earliest
 };
 
