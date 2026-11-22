@@ -7,7 +7,9 @@ var config = new ConsumerConfig
 {
     BootstrapServers = KafkaDefaults.BootstrapServers,
     GroupId = args[0],
-    AutoOffsetReset = AutoOffsetReset.Earliest
+    AutoOffsetReset = AutoOffsetReset.Earliest,
+    EnableAutoCommit = true,
+    EnableAutoOffsetStore = true,
 };
 
 
@@ -35,14 +37,19 @@ try
 {
     while (true)
     {
-        if (i >= 15)
-        {
-            Environment.FailFast("Boom");
-        }
         var cr = consumer.Consume(cts.Token);   // blocks until a message arrives (or cancel)
         Console.WriteLine($"{cr.Message.Key} | partition {cr.Partition.Value} | offset {cr.Offset.Value} | {cr.Message.Value}");
         Thread.Sleep(1000);
+
         i++;
+        if (i >= 15)
+        {
+            Console.WriteLine($"CRASH while processing partition {cr.Partition.Value} offset {cr.Offset.Value}");
+            // dies before StoreOffset
+            Environment.FailFast("Boom");
+        }
+        // only reached if processing finished
+        consumer.StoreOffset(cr);
     }
 }
 catch (OperationCanceledException)
