@@ -33,8 +33,7 @@ Console.CancelKeyPress += (sender, e) =>
 
 consumer.Subscribe(Topics.DriverLocations);
 
-int i = 0;
-
+// one per consumer instance, in case of multiple consumer instances this wont work!!!!!
 var latest = new Dictionary<string, DriverLocation>();
 try
 {
@@ -71,21 +70,12 @@ try
                 Console.WriteLine("SKIPPED (stale/duplicate)");
             }
         }
+        else
+        {
+            Console.WriteLine("POISON wrong JSON format");
+        }
         // only reached if processing finished
         consumer.StoreOffset(cr);
-
-
-        //Console.WriteLine($"{cr.Message.Key} | partition {cr.Partition.Value} | offset {cr.Offset.Value} | {cr.Message.Value}");
-        //Thread.Sleep(1000);
-
-        //i++;
-        //if (i >= 15)
-        //{
-        //    Console.WriteLine($"CRASH while processing partition {cr.Partition.Value} offset {cr.Offset.Value}");
-        //    // dies before StoreOffset
-        //    Environment.FailFast("Boom");
-        //}
-
     }
 }
 catch (OperationCanceledException)

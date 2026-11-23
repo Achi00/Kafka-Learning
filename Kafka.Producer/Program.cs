@@ -13,6 +13,8 @@ using var producer = new ProducerBuilder<string, string>(config).Build();
 
 var random = new Random();
 
+int i = 0;
+
 while (true)
 {
     var driverKey = $"driver-{random.Next(1, 6)}";
@@ -26,6 +28,14 @@ while (true)
     var json = JsonSerializer.Serialize(driverLocation);
 
     var res = await producer.ProduceAsync(Topics.DriverLocations, new Message<string, string> { Key = driverKey, Value = json });
+
+    // send same message on every 10th
+    if (i % 10 == 0)
+    {
+        await producer.ProduceAsync(Topics.DriverLocations, new Message<string, string> { Key = driverKey, Value = json });
+    }
+
+    i++;
 
     Console.WriteLine(res.Message.Key);
     Console.WriteLine(res.Partition.Value);
