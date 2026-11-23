@@ -1,4 +1,5 @@
 ﻿using Confluent.Kafka;
+using Kafka.Consumer.Handlers;
 using Kafka.Shared.Setup;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -65,6 +66,7 @@ namespace Kafka.Consumer
                         continue;
                     }
 
+                    // buissness logic handler and offset commiting
                     Process(cr, ct);
                     StoreOffset(consumer, cr);
                 }
@@ -96,6 +98,12 @@ namespace Kafka.Consumer
                 return;
             }
 
+            using var scope = scopeFactory.CreateScope();
+            // get main bussines logic handler
+            var handler = scope.ServiceProvider.GetRequiredService<IDriverLocationHandler>();
+            // dont using await, using getawaiter because we are in consumers dedicated thread, we have no synchronization context, cant deadlock
+            // if we use await thread will be released and be hadled by threadpool
+            handler.HandleAsync(location, ct).GetAwaiter().GetResult();
         }
 
         // marks message as done, updates per partition
