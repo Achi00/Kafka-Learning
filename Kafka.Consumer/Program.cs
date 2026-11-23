@@ -65,9 +65,15 @@ try
                 latest[location.DriverId] = location;
                 Console.WriteLine($"APPLIED | {location.DriverId} | p{cr.Partition.Value} o{cr.Offset.Value} | {location.Timestamp:HH:mm:ss.fff}");
             }
+            // duplicate value events match
+            else if (location.EventId == value.EventId)
+            {
+                Console.WriteLine($"DUPLICATE | {location.DriverId} | p{cr.Partition.Value} o{cr.Offset.Value} | same event {location.EventId}");
+            }
+            // staled value in this case -10 seconds
             else
             {
-                Console.WriteLine($"SKIPPED (stale/duplicate) | {location.DriverId} | p{cr.Partition.Value} o{cr.Offset.Value} | {location.Timestamp:HH:mm:ss.fff}");
+                Console.WriteLine($"STALE | {location.DriverId} | p{cr.Partition.Value} o{cr.Offset.Value} | incoming {location.Timestamp:HH:mm:ss.fff} < current {value.Timestamp:HH:mm:ss.fff}");
             }
         }
         else
