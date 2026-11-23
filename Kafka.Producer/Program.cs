@@ -13,7 +13,7 @@ using var producer = new ProducerBuilder<string, string>(config).Build();
 
 var random = new Random();
 
-int i = 0;
+int i = 1;
 
 while (true)
 {

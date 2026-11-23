@@ -67,7 +67,7 @@ try
             }
             else
             {
-                Console.WriteLine("SKIPPED (stale/duplicate)");
+                Console.WriteLine($"SKIPPED (stale/duplicate) | {location.DriverId} | p{cr.Partition.Value} o{cr.Offset.Value} | {location.Timestamp:HH:mm:ss.fff}");
             }
         }
         else
