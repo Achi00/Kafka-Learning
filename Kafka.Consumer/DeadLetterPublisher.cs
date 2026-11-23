@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Kafka.Consumer
 {
-    internal class DeadLetterPublisher
+    public class DeadLetterPublisher
     {
     }
 }
