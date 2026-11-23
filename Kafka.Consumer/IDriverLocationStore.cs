@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Kafka.Shared.Setup;
 
 namespace Kafka.Consumer
 {
-    internal interface IDriverLocationStore
+    public interface IDriverLocationStore
     {
+        ApplyResult TryApply(DriverLocation incoming);
     }
+
+    // state of message type: DriverLocation
+    public enum ApplyResult { Applied, Duplicate, Stale }
 }
