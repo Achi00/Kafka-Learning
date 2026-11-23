@@ -1,10 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Kafka.Shared.Setup
 {
-    internal class KafkaOptions
+    public sealed class KafkaOptions
     {
+        public const string Section = "Kafka";
+
+        [Required]
+        public string BootstrapServers { get; init; }
+        
+        [Required]
+        public string GroupId { get; init; } = "";
+
     }
 }
