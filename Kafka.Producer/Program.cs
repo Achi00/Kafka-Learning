@@ -35,6 +35,19 @@ while (true)
         await producer.ProduceAsync(Topics.DriverLocations, new Message<string, string> { Key = driverKey, Value = json });
     }
 
+    // simulate stale messages, in case drivers location is not send cause of bad connection, old ones should not overwrite new ones
+    if (i % 15 == 0)
+    {
+        var stale = driverLocation with
+        {
+            EventId = Guid.NewGuid(), // different event not retried existing one!!
+            // past timestamp to act as delayed past messages
+            Timestamp = DateTimeOffset.UtcNow.AddSeconds(-10)
+        };
+        // produce with stale message serialized as json
+        await producer.ProduceAsync(Topics.DriverLocations, new Message<string, string> { Key = driverKey, Value = JsonSerializer.Serialize(stale) });
+    }
+
     i++;
 
     Console.WriteLine(res.Message.Key);
