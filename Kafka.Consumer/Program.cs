@@ -1,5 +1,6 @@
 ﻿using Confluent.Kafka;
 using Kafka.Consumer;
+using Kafka.Consumer.Handlers;
 using Kafka.Shared.Setup;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,6 +24,11 @@ builder.Services.AddSingleton<IProducer<string, string>>(sp =>
         EnableIdempotence = true
     }).Build();
 });
+
+builder.Services.AddSingleton<IDriverLocationStore, InMemoryDriverLocationStore>();
+builder.Services.AddScoped<IDriverLocationHandler, DriverLocationHandler>();
+builder.Services.AddSingleton<DeadLetterPublisher>();
+builder.Services.AddHostedService<DriverLocationConsumer>();
 
 var host = builder.Build();
 
