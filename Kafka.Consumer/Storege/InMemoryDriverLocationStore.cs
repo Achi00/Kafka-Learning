@@ -4,23 +4,24 @@ namespace Kafka.Consumer.Storege
 {
     public sealed class InMemoryDriverLocationStore : IDriverLocationStore
     {
-        private static Dictionary<string, DriverLocation> latest = new Dictionary<string, DriverLocation>();
+        // singleton memory store
+        private Dictionary<string, DriverLocation> latest = new();
 
         public ApplyResult TryApply(DriverLocation incoming)
         {
-            if (!latest.TryGetValue(incoming.DriverId, out var value))
+            if (!latest.TryGetValue(incoming.DriverId, out var current) || incoming.Timestamp > current.Timestamp)
             {
                 latest[incoming.DriverId] = incoming;
                 return ApplyResult.Applied;
             }
-            else if (value.EventId == incoming.EventId)
+            
+            if (current.EventId == incoming.EventId)
             {
                 return ApplyResult.Duplicate;
             }
-            else
-            {
-                return ApplyResult.Stale;
-            }
+
+            return ApplyResult.Stale;
+
         }
     }
 }

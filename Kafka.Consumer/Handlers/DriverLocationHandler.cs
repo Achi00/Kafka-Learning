@@ -14,12 +14,15 @@ namespace Kafka.Consumer.Handlers
             _locationStore = locationStore;
             _logger = logger;
         }
+        // async in interface for future async work, not needed for now
         public Task HandleAsync(DriverLocation location, CancellationToken ct)
         {
             var result = _locationStore.TryApply(location);
-            _logger.LogInformation(result.ToString());
-
-            return Task.FromResult(result);
+            
+            _logger.LogInformation(
+                "{Result} | {DriverId} | {Timestamp:HH:mm:ss.fff} | {EventId}", result, location.DriverId, location.Timestamp, location.EventId);
+            
+            return Task.CompletedTask;
         }
     }
 }

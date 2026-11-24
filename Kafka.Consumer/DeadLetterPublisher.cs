@@ -7,11 +7,20 @@ using System.Text;
 namespace Kafka.Consumer
 {
     // failed messages
-    public sealed class DeadLetterPublisher(
-        IProducer<string, string> producer,
-        IOptions<KafkaOptions> options,
-        ILogger<DeadLetterPublisher> logger)
+    public sealed class DeadLetterPublisher
     {
+        private readonly IProducer<string, string> _producer;
+        private readonly IOptions<KafkaOptions> _options;
+        private readonly ILogger<DeadLetterPublisher> _logger;
+        public DeadLetterPublisher(
+            IProducer<string, string> producer,
+            IOptions<KafkaOptions> options,
+            ILogger<DeadLetterPublisher> logger)
+        {
+            _producer = producer;
+            _options = options;
+            _logger = logger;
+        }
         public async Task PublishAsync(ConsumeResult<string, string> cr, Exception error, CancellationToken ct)
         {
             // kafka headers for metadata
