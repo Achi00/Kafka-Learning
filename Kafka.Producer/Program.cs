@@ -7,20 +7,15 @@ using Microsoft.Extensions.Options;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-// producer singleton service
-builder.Services.AddSingleton<IProducer<string, string>>(sp =>
-{
-    var o = sp.GetRequiredService<IOptions<KafkaOptions>>().Value;
-    return new ProducerBuilder<string, string>(new ProducerConfig
-    {
-        BootstrapServers = o.BootstrapServers,
-        Acks = Acks.All,
-        EnableIdempotence = true
-    }).Build();
-});
-
+// producer's singleton services
+builder.Services.AddKafka();
+// simulated bg worker
 builder.Services.AddHostedService<DriverSimulator>();
 
 var host = builder.Build();
+
+var kafka = host.Services.GetRequiredService<IOptions<KafkaOptions>>().Value;
+await KafkaConfig.EnsureTopicAsync(kafka.BootstrapServers, Topics.DriverLocations, Topics.DriverLocationsPartitions);
+
 
 await host.RunAsync();
