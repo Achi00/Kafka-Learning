@@ -37,20 +37,20 @@ namespace Kafka.Consumer
             Add(headers, "dlq-original-topic", cr.Topic);
             Add(headers, "dlq-original-partition", cr.Partition.Value.ToString());
             Add(headers, "dlq-original-offset", cr.Offset.Value.ToString());
-            Add(headers, "dlq-consumer-group", options.Value.GroupId);
+            Add(headers, "dlq-consumer-group", _options.Value.GroupId);
             Add(headers, "dlq-error-type", error.GetType().FullName ?? "unknown");
             Add(headers, "dlq-error-message", error.Message);
             Add(headers, "dlq-failed-at", DateTimeOffset.UtcNow.ToString("O"));
 
             // produce message, even if it is for dead queue it is only way to move it away based on topic!!!
-            await producer.ProduceAsync(Topics.DriverLocationsDlq, new Message<string, string>
+            await _producer.ProduceAsync(Topics.DriverLocationsDlq, new Message<string, string>
             {
                 Key = cr.Message.Key,
                 Value = cr.Message.Value,
                 Headers = headers
             }, ct);
 
-            logger.LogWarning("Sent to DLQ: p{Partition} o{Offset} ({Error})",
+            _logger.LogWarning("Sent to DLQ: p{Partition} o{Offset} ({Error})",
                 cr.Partition.Value, cr.Offset.Value, error.Message);
         }
         // helper method to add header metadata with correct valie and key
