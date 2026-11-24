@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace Kafka.Consumer
 {
@@ -50,7 +51,7 @@ namespace Kafka.Consumer
                     logger.LogInformation("Revoked: [{Partitions}]", string.Join(", ", parts.Select(p => p.Partition.Value))))
                 .Build();
 
-            consumer.Subscribe(Topics.DriverLocations);
+            consumer.Subscribe(new[] { Topics.DriverLocations, Topics.Retry(driverOptions.Value.GroupId, Topics.DriverLocations) });
 
             try
             {

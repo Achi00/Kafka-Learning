@@ -23,7 +23,11 @@ builder.Services.AddHostedService<DriverLocationConsumer>();
 var host = builder.Build();
 
 var kafka = host.Services.GetRequiredService<IOptions<KafkaOptions>>().Value;
+var consumerOptions = host.Services.GetRequiredService<IOptions<DriverLocationConsumerOptions>>().Value;
+
 await KafkaConfig.EnsureTopicAsync(kafka.BootstrapServers, Topics.DriverLocations, Topics.DriverLocationsPartitions);
-await KafkaConfig.EnsureTopicAsync(kafka.BootstrapServers, Topics.DriverLocationsDlq, 1);
+// dynamic changinf dlq and retry
+await KafkaConfig.EnsureTopicAsync(kafka.BootstrapServers, Topics.DeadLetter(Topics.DriverLocations, consumerOptions.GroupId), 1);
+await KafkaConfig.EnsureTopicAsync(kafka.BootstrapServers, Topics.Retry(Topics.DriverLocations, consumerOptions.GroupId), Topics.DriverLocationsPartitions);
 
 await host.RunAsync();
