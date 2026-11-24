@@ -18,6 +18,7 @@ builder.Services.AddSingleton<IProducer<string, string>>(sp =>
         EnableIdempotence = true
     }).Build();
 });
+
 builder.Services.AddHostedService<DriverSimulator>();
 
 var host = builder.Build();
