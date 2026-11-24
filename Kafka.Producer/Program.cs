@@ -7,12 +7,6 @@ using Microsoft.Extensions.Options;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-Console.WriteLine(builder.Environment.ContentRootPath);
-
-Console.WriteLine(
-    builder.Configuration["Kafka:BootstrapServers"] ?? "NULL"
-);
-
 // producer's singleton services
 builder.Services.AddKafka();
 // simulated bg worker
