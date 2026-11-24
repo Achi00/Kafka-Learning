@@ -1,6 +1,7 @@
 ﻿using Confluent.Kafka;
 using Kafka.Consumer;
 using Kafka.Consumer.Handlers;
+using Kafka.Consumer.Storege;
 using Kafka.Shared.Setup;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
