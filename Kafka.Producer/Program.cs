@@ -1,58 +1,21 @@
 ﻿using Confluent.Kafka;
+using Kafka.Producer.BgServices;
 using Kafka.Shared.Setup;
-using System.Text.Json;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
-await KafkaConfig.EnsureTopicAsync(KafkaDefaults.BootstrapServers, Topics.DriverLocations, Topics.DriverLocationsPartitions);
+var builder = Host.CreateApplicationBuilder(args);
 
-var config = new ProducerConfig
+// producer singleton service
+builder.Services.AddSingleton<IProducer<string, string>>(sp =>
 {
-    BootstrapServers = KafkaDefaults.BootstrapServers
-};
-
-using var producer = new ProducerBuilder<string, string>(config).Build();
-
-var random = new Random();
-
-int i = 1;
-
-while (true)
-{
-    var driverKey = $"driver-{random.Next(1, 6)}";
-
-
-    var lat = random.NextDouble() * 100;
-    var lng = random.NextDouble() * 100;
-
-    var driverLocation = new DriverLocation(Guid.NewGuid(), driverKey, lat, lng, DateTimeOffset.UtcNow);
-
-    var json = JsonSerializer.Serialize(driverLocation);
-
-    var res = await producer.ProduceAsync(Topics.DriverLocations, new Message<string, string> { Key = driverKey, Value = json });
-
-    // send same message on every 10th
-    if (i % 10 == 0)
+    var o = sp.GetRequiredService<IOptions<KafkaOptions>>().Value;
+    return new ProducerBuilder<string, string>(new ProducerConfig
     {
-        await producer.ProduceAsync(Topics.DriverLocations, new Message<string, string> { Key = driverKey, Value = json });
-    }
-
-    // simulate stale messages, in case drivers location is not send cause of bad connection, old ones should not overwrite new ones
-    if (i % 15 == 0)
-    {
-        var stale = driverLocation with
-        {
-            EventId = Guid.NewGuid(), // different event not retried existing one!!
-            // past timestamp to act as delayed past messages
-            Timestamp = DateTimeOffset.UtcNow.AddSeconds(-10)
-        };
-        // produce with stale message serialized as json
-        await producer.ProduceAsync(Topics.DriverLocations, new Message<string, string> { Key = driverKey, Value = JsonSerializer.Serialize(stale) });
-    }
-
-    i++;
-
-    Console.WriteLine(res.Message.Key);
-    Console.WriteLine(res.Partition.Value);
-    Console.WriteLine(res.Offset.Value);
-
-    await Task.Delay(500);
-}
+        BootstrapServers = o.BootstrapServers,
+        Acks = Acks.All,
+        EnableIdempotence = true
+    }).Build();
+});
+builder.Services.AddHostedService<DriverSimulator>();
