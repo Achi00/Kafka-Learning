@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -92,8 +93,11 @@ namespace Kafka.Consumer
             {
                 location = JsonSerializer.Deserialize<DriverLocation>(cr.Message.Value)
                            ?? throw new JsonException("Payload deserialized to null");
+
+                // if deserialized as valid json check values itself
+                Validate(location);
             }
-            catch (JsonException ex)
+            catch (JsonException)
             {
                 // Permanent failure -> DLQ. If the DLQ write itself throws, we let it bubble:
                 // offset is NOT stored, the host stops, and the message is redelivered after restart.
@@ -120,6 +124,34 @@ namespace Kafka.Consumer
                 // Partition was revoked mid-processing; its new owner will reprocess this message.
                 logger.LogWarning("Partition {Partition} revoked before storing offset {Offset}",
                     cr.Partition.Value, cr.Offset.Value);
+            }
+        }
+
+        private static readonly JsonSerializerOptions JsonOptions = new()
+        {
+            // missing ctor param = JsonException
+            RespectRequiredConstructorParameters = true,
+            // null in non-nullable property = JsonException
+            RespectNullableAnnotations = true 
+        };
+        // validate coordinates, if it is 0 it means it is filled as default integlar value bacause of wrong json payload, reject it
+        private static void Validate(DriverLocation l)
+        {
+            if (l.EventId == Guid.Empty)
+            {
+                throw new ValidationException("EventId is empty");
+            }
+            if (string.IsNullOrWhiteSpace(l.DriverId))
+            {
+                throw new ValidationException("DriverId is empty");
+            }
+            if (l.Lat is < -90 or > 90)
+            {
+                throw new ValidationException($"Lat out of range: {l.Lat}");
+            }
+            if (l.Lng is < -180 or > 180)
+            {
+                throw new ValidationException($"Lng out of range: {l.Lng}");
             }
         }
     }
