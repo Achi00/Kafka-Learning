@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
-using System.Text.RegularExpressions;
 
 namespace Kafka.Consumer
 {
@@ -97,10 +96,11 @@ namespace Kafka.Consumer
                 // if deserialized as valid json check values itself
                 Validate(location);
             }
-            catch (JsonException)
+            catch (Exception ex) when (ex is JsonException or ValidationException)
             {
                 // Permanent failure -> DLQ. If the DLQ write itself throws, we let it bubble:
                 // offset is NOT stored, the host stops, and the message is redelivered after restart.
+                deadLetters.PublishAsync(cr, ex, ct).GetAwaiter().GetResult();
                 return;
             }
 
