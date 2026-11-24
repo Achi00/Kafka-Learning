@@ -19,3 +19,7 @@ builder.Services.AddSingleton<IProducer<string, string>>(sp =>
     }).Build();
 });
 builder.Services.AddHostedService<DriverSimulator>();
+
+var host = builder.Build();
+
+await host.RunAsync();
