@@ -10,15 +10,18 @@ namespace Kafka.Consumer
     public sealed class DeadLetterPublisher
     {
         private readonly IProducer<string, string> _producer;
-        private readonly IOptions<KafkaOptions> _options;
+        private readonly IOptions<KafkaOptions> _kafkaOptions;
+        private readonly IOptions<DriverLocationConsumerOptions> _driverOptions;
         private readonly ILogger<DeadLetterPublisher> _logger;
         public DeadLetterPublisher(
             IProducer<string, string> producer,
-            IOptions<KafkaOptions> options,
+            IOptions<KafkaOptions> kafkaOptions,
+            IOptions<DriverLocationConsumerOptions> driverOptions,
             ILogger<DeadLetterPublisher> logger)
         {
             _producer = producer;
-            _options = options;
+            _kafkaOptions = kafkaOptions;
+            _driverOptions = driverOptions;
             _logger = logger;
         }
         public async Task PublishAsync(ConsumeResult<string, string> cr, Exception error, CancellationToken ct)
@@ -37,7 +40,7 @@ namespace Kafka.Consumer
             Add(headers, "dlq-original-topic", cr.Topic);
             Add(headers, "dlq-original-partition", cr.Partition.Value.ToString());
             Add(headers, "dlq-original-offset", cr.Offset.Value.ToString());
-            Add(headers, "dlq-consumer-group", _options.Value.GroupId);
+            Add(headers, "dlq-consumer-group", _driverOptions.Value.GroupId);
             Add(headers, "dlq-error-type", error.GetType().FullName ?? "unknown");
             Add(headers, "dlq-error-message", error.Message);
             Add(headers, "dlq-failed-at", DateTimeOffset.UtcNow.ToString("O"));

@@ -12,6 +12,7 @@ namespace Kafka.Consumer
     public sealed class DriverLocationConsumer(
         IOptions<KafkaOptions> options,
         IServiceScopeFactory scopeFactory,
+        IOptions<DriverLocationConsumerOptions> driverOptions,
         DeadLetterPublisher deadLetters,
         ILogger<DriverLocationConsumer> logger) : BackgroundService
     {
@@ -31,7 +32,7 @@ namespace Kafka.Consumer
             var config = new ConsumerConfig
             {
                 BootstrapServers = options.Value.BootstrapServers,
-                GroupId = options.Value.GroupId,
+                GroupId = driverOptions.Value.GroupId,
                 AutoOffsetReset = AutoOffsetReset.Earliest,
                 EnableAutoCommit = true,
                 // at least once, we store after processing
