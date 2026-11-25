@@ -1,5 +1,4 @@
-﻿using Confluent.Kafka;
-using Dapper;
+﻿using Dapper;
 using Kafka.Producer.BgServices;
 using Kafka.Shared.Setup;
 using Microsoft.Data.SqlClient;
@@ -9,21 +8,9 @@ using Microsoft.Extensions.Options;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-// producer's singleton services
-builder.Services.AddKafka();
-// simulated bg worker
-builder.Services.AddHostedService<DriverSimulator>();
-
-var host = builder.Build();
-
-var kafka = host.Services.GetRequiredService<IOptions<KafkaOptions>>().Value;
-
-Console.WriteLine(kafka.BootstrapServers);
-await KafkaConfig.EnsureTopicAsync(kafka.BootstrapServers, Topics.DriverLocations, Topics.DriverLocationsPartitions);
-
 var connectionString =
     "Server=localhost;" +
-    "Database=KafkaOutboxDemo;" +
+    "Database=Kafka_Learning;" +
     "Integrated Security=True;" +
     "TrustServerCertificate=True;";
 
@@ -36,5 +23,16 @@ var result = await connection.QuerySingleAsync<int>(
     "SELECT 1");
 
 Console.WriteLine($"Database returned: {result}");
+
+// producer's singleton services
+builder.Services.AddKafka();
+// simulated bg worker
+builder.Services.AddHostedService<DriverSimulator>();
+
+var host = builder.Build();
+
+var kafka = host.Services.GetRequiredService<IOptions<KafkaOptions>>().Value;
+
+await KafkaConfig.EnsureTopicAsync(kafka.BootstrapServers, Topics.DriverLocations, Topics.DriverLocationsPartitions);
 
 await host.RunAsync();
