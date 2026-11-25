@@ -5,6 +5,9 @@
   <Folder Name="/Producers/">
     <Project Path="Kafka.Producer/Kafka.Producer.csproj" />
   </Folder>
+  <Folder Name="/Replies/">
+    <Project Path="Kafka.DlqReplay/Kafka.DlqReplay.csproj" Id="2079f464-618e-446f-b7fb-551cae845cc0" />
+  </Folder>
   <Folder Name="/Shared/">
     <Project Path="Kafka.Shared/Kafka.Shared.csproj" />
   </Folder>
