@@ -90,7 +90,7 @@ namespace Kafka.Consumer
             DriverLocation? location;
             try
             {
-                location = JsonSerializer.Deserialize<DriverLocation>(cr.Message.Value)
+                location = JsonSerializer.Deserialize<DriverLocation>(cr.Message.Value, JsonOptions)
                            ?? throw new JsonException("Payload deserialized to null");
 
                 // if deserialized as valid json check values itself

@@ -27,7 +27,7 @@ var consumerOptions = host.Services.GetRequiredService<IOptions<DriverLocationCo
 
 await KafkaConfig.EnsureTopicAsync(kafka.BootstrapServers, Topics.DriverLocations, Topics.DriverLocationsPartitions);
 // dynamic changinf dlq and retry
-await KafkaConfig.EnsureTopicAsync(kafka.BootstrapServers, Topics.DeadLetter(Topics.DriverLocations, consumerOptions.GroupId), 1);
-await KafkaConfig.EnsureTopicAsync(kafka.BootstrapServers, Topics.Retry(Topics.DriverLocations, consumerOptions.GroupId), Topics.DriverLocationsPartitions);
+await KafkaConfig.EnsureTopicAsync(kafka.BootstrapServers, Topics.DeadLetter(groupId: consumerOptions.GroupId, topic: Topics.DriverLocations), 1);
+await KafkaConfig.EnsureTopicAsync(kafka.BootstrapServers, Topics.Retry(groupId: consumerOptions.GroupId, topic: Topics.DriverLocations), Topics.DriverLocationsPartitions);
 
 await host.RunAsync();
