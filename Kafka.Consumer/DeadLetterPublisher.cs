@@ -10,40 +10,37 @@ namespace Kafka.Consumer
     public sealed class DeadLetterPublisher
     {
         private readonly IProducer<string, string> _producer;
-        private readonly IOptions<KafkaOptions> _kafkaOptions;
         private readonly IOptions<DriverLocationConsumerOptions> _driverOptions;
         private readonly ILogger<DeadLetterPublisher> _logger;
         public DeadLetterPublisher(
             IProducer<string, string> producer,
-            IOptions<KafkaOptions> kafkaOptions,
             IOptions<DriverLocationConsumerOptions> driverOptions,
             ILogger<DeadLetterPublisher> logger)
         {
             _producer = producer;
-            _kafkaOptions = kafkaOptions;
             _driverOptions = driverOptions;
             _logger = logger;
         }
         public async Task PublishAsync(ConsumeResult<string, string> cr, Exception error, CancellationToken ct)
         {
             // kafka headers for metadata
-            var headers = new Headers();
+            var dlqHeaders = new Headers();
 
             if (cr.Message.Headers is not null)
             {
-                foreach (var header in headers)
+                foreach (var header in cr.Message.Headers)
                 {
-                    headers.Add(header.Key, header.GetValueBytes());
+                    dlqHeaders.Add(header.Key, header.GetValueBytes());
                 }
             }
 
-            Add(headers, "dlq-original-topic", cr.Topic);
-            Add(headers, "dlq-original-partition", cr.Partition.Value.ToString());
-            Add(headers, "dlq-original-offset", cr.Offset.Value.ToString());
-            Add(headers, "dlq-consumer-group", _driverOptions.Value.GroupId);
-            Add(headers, "dlq-error-type", error.GetType().FullName ?? "unknown");
-            Add(headers, "dlq-error-message", error.Message);
-            Add(headers, "dlq-failed-at", DateTimeOffset.UtcNow.ToString("O"));
+            Add(dlqHeaders, "dlq-original-topic", cr.Topic);
+            Add(dlqHeaders, "dlq-original-partition", cr.Partition.Value.ToString());
+            Add(dlqHeaders, "dlq-original-offset", cr.Offset.Value.ToString());
+            Add(dlqHeaders, "dlq-consumer-group", _driverOptions.Value.GroupId);
+            Add(dlqHeaders, "dlq-error-type", error.GetType().FullName ?? "unknown");
+            Add(dlqHeaders, "dlq-error-message", error.Message);
+            Add(dlqHeaders, "dlq-failed-at", DateTimeOffset.UtcNow.ToString("O"));
 
             // produce message, even if it is for dead queue it is only way to move it away based on topic!!!
             await _producer.ProduceAsync(
@@ -53,7 +50,7 @@ namespace Kafka.Consumer
                 {
                     Key = cr.Message.Key,
                     Value = cr.Message.Value,
-                    Headers = headers
+                    Headers = dlqHeaders
                 }, ct);
 
             _logger.LogWarning("Sent to DLQ: p{Partition} o{Offset} ({Error})",

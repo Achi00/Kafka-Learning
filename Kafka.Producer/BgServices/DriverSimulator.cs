@@ -25,10 +25,16 @@ namespace Kafka.Producer.BgServices
             {
                 // randomize data
                 var driverId = $"driver-{_random.Next(1, 6)}";
+
+                var lat = 41.65 + _random.NextDouble() * 0.15;
+                var lng = 44.70 + _random.NextDouble() * 0.25;
+
                 var location = new DriverLocation(
-                Guid.NewGuid(), driverId,
-                _random.NextDouble() * 100, _random.NextDouble() * 100,
-                DateTimeOffset.UtcNow);
+                    Guid.NewGuid(), driverId,
+                    lat, 
+                    lng,
+                    DateTimeOffset.UtcNow
+                );
 
                 await SendAsync(location, ct);
 

@@ -40,6 +40,7 @@ while (true)
         break;
     }
 
+    // for header value to keep count
     var count = ReadInt(cr.Message.Headers, "dlq-replay-count");
     if (count >= maxReplays)
     {
@@ -50,7 +51,7 @@ while (true)
     }
 
 
-    // create headers ro include 
+    // create headers to include additional count value
     var headers = new Headers();
     foreach (var h in cr.Message.Headers)
     {
@@ -67,6 +68,7 @@ while (true)
         Value = cr.Message.Value,
         Headers = headers
     });
+    Console.WriteLine($"REPLAY p{cr.Partition.Value} o{cr.Offset.Value} key={cr.Message.Key} count={count + 1}");
 
     // only after the retry write is confirmed
     consumer.Commit(cr);
@@ -76,5 +78,7 @@ while (true)
 consumer.Close();
 Console.WriteLine($"Replayed {replayed}, gave up on {gaveUp}");
 
+// reading last bytes because it is most recent additions to headers history
+// byte -> string -> try parse int
 static int ReadInt(Headers? headers, string key) =>
     headers is not null && headers.TryGetLastBytes(key, out var b) && int.TryParse(Encoding.UTF8.GetString(b), out var n) ? n : 0;
