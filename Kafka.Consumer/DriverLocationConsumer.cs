@@ -87,7 +87,7 @@ namespace Kafka.Consumer
         // now processing contains just deserialization of json
         private void Process(ConsumeResult<string, string> cr, CancellationToken ct)
         {
-            DriverLocation? location;
+            DriverLocation location;
             try
             {
                 location = JsonSerializer.Deserialize<DriverLocation>(cr.Message.Value, JsonOptions)
