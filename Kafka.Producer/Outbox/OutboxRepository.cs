@@ -1,4 +1,6 @@
-﻿using Kafka.Producer.Database;
+﻿using Dapper;
+using Kafka.Producer.Database;
+using System.Data.Common;
 
 namespace Kafka.Producer.Outbox
 {
@@ -11,15 +13,14 @@ namespace Kafka.Producer.Outbox
             _connectionFactory = connectionFactory;
         }
 
-        public async Task AddAsync(OutboxMessage message)
+        public Task AddAsync(OutboxMessage message, DbConnection connection, DbTransaction transaction)
         {
-            using var connection = _connectionFactory.CreateConnection();
-
             const string sql = """
-                INSERT INTO OutboxMessages 
-                    (MessageId, Topic, MessageKey, Type, Payload, CreatedAt, ProcessedAt, Attempts)
-                VALUES ()
-                """;
+                INSERT INTO dbo.OutboxMessages (MessageId, Topic, MessageKey, Type, Payload)
+                VALUES (@MessageId, @Topic, @MessageKey, @Type, @Payload)
+             """;
+
+            return connection.ExecuteAsync(sql, message, transaction);
         }
     }
 }
