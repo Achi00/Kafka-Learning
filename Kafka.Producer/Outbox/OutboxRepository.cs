@@ -6,13 +6,6 @@ namespace Kafka.Producer.Outbox
 {
     public sealed class OutboxRepository
     {
-        private readonly IDbConnectionFactory _connectionFactory;
-
-        public OutboxRepository(IDbConnectionFactory connectionFactory)
-        {
-            _connectionFactory = connectionFactory;
-        }
-
         public Task AddAsync(OutboxMessage message, DbConnection connection, DbTransaction transaction)
         {
             const string sql = """

@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Kafka.Producer.BgServices;
+using Kafka.Producer.Database;
 using Kafka.Shared.Setup;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +29,11 @@ Console.WriteLine($"Database returned: {result}");
 builder.Services.AddKafka();
 // simulated bg worker
 builder.Services.AddHostedService<DriverSimulator>();
+// connection factory
+builder.Services.AddSingleton<IDbConnectionFactory>();
+// outbox repository
+//builder.Services.AddScoped<>
+
 
 var host = builder.Build();
 

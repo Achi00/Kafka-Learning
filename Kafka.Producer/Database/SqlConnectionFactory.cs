@@ -1,8 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Text;
+using System.Data.Common;
 
 namespace Kafka.Producer.Database
 {
@@ -15,7 +12,7 @@ namespace Kafka.Producer.Database
             _connectionString = connectionString;
         }
 
-        public IDbConnection CreateConnection()
+        public DbConnection CreateConnection()
         {
             return new SqlConnection(_connectionString);
         }

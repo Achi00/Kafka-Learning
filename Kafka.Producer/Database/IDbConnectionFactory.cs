@@ -1,9 +1,9 @@
-﻿using System.Data;
+﻿using System.Data.Common;
 
 namespace Kafka.Producer.Database
 {
     public interface IDbConnectionFactory
     {
-        IDbConnection CreateConnection();
+        DbConnection CreateConnection();
     }
 }
