@@ -1,8 +1,8 @@
 ﻿using Microsoft.Data.SqlClient;
-using RideHailing.BuildingBlocks.Interfaces;
+using RideHailing.BuildingBlocks.Data.Interfaces;
 using System.Data.Common;
 
-namespace RideHailing.BuildingBlocks
+namespace RideHailing.BuildingBlocks.Data
 {
     public sealed class SqlConnectionFactory : IDbConnectionFactory
     {

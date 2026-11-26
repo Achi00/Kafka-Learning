@@ -1,7 +1,7 @@
 ﻿using Dapper;
-using RideHailing.BuildingBlocks.Interfaces;
+using RideHailing.BuildingBlocks.Data.Interfaces;
 
-namespace DriverSimulator.Outbox
+namespace RideHailing.BuildingBlocks.Outbox
 {
     public sealed class OutboxRepository
     {

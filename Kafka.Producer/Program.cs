@@ -1,10 +1,10 @@
 ﻿using DriverSimulator.BgServices;
-using DriverSimulator.Outbox;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using RideHailing.BuildingBlocks;
-using RideHailing.BuildingBlocks.Interfaces;
+using RideHailing.BuildingBlocks.Data;
+using RideHailing.BuildingBlocks.Data.Interfaces;
+using RideHailing.BuildingBlocks.Outbox;
 using RideHailing.Contracts.Setup;
 
 var builder = Host.CreateApplicationBuilder(args);

@@ -1,4 +1,4 @@
-﻿namespace DriverSimulator.Outbox
+﻿namespace RideHailing.BuildingBlocks.Outbox
 {
     public class OutboxMessage
     {

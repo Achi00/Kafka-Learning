@@ -1,4 +1,4 @@
-﻿namespace DriverSimulator.Models
+﻿namespace Rides.Api.Rides
 {
     public sealed class Ride
     {
@@ -8,12 +8,5 @@
         public double PickupLng { get; init; }
         public required RideStatus Status { get; init; }
         public DateTime CreatedAt { get; init; }
-    }
-    public enum RideStatus
-    {
-        Requested,
-        Assigned,
-        InProgress,
-        Completed
     }
 }
