@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Kafka.Shared\RideHailing.Contracts.csproj" />
+    <ProjectReference Include="..\RideHailing.BuildingBlocks\RideHailing.BuildingBlocks.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.json">

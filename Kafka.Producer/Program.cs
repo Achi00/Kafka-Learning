@@ -5,6 +5,7 @@ using Kafka.Shared.Setup;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using RideHailing.BuildingBlocks.Interfaces;
 
 var builder = Host.CreateApplicationBuilder(args);
 
