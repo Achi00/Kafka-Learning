@@ -19,7 +19,20 @@ namespace Rides.Api.Rides
                 VALUES (@RiderId, @PickupLat, @PickupLng, @Status, @CreatedAt)
              """;
 
-            return _unitOfWork.Connection.ExecuteAsync(sql, ride, _unitOfWork.Transaction);
+            var data = new
+            {
+                ride.Id,
+                ride.RiderId,
+                ride.PickupLat,
+                ride.PickupLng,
+                Status = ride.Status.ToString(),
+                ride.CreatedAt
+            };
+
+            return _unitOfWork.Connection.ExecuteAsync(
+                sql, 
+                data, 
+                _unitOfWork.Transaction);
         }
     }
 }

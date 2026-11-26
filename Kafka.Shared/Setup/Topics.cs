@@ -4,6 +4,8 @@
     {
         public const string DriverLocations = "driver-locations";
         public const int DriverLocationsPartitions = 3;
+        public const string RideEvents = "ride-events";
+        public const int RideEventsPartitions = 3;
 
         // for group based dlq and retry, avoids shared topics for corrupt or missleading results
         public static string DeadLetter(string groupId, string topic) => $"{groupId}.{topic}.dlq";
