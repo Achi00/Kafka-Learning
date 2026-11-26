@@ -26,7 +26,7 @@ namespace Rides.Api.Rides
                 ride.PickupLat,
                 ride.PickupLng,
                 Status = ride.Status.ToString(),
-                ride.CreatedAt
+                ride.RequestedAt
             };
 
             return _unitOfWork.Connection.ExecuteAsync(

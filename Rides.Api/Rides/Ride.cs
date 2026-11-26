@@ -7,6 +7,6 @@
         public double PickupLat { get; init; }
         public double PickupLng { get; init; }
         public required RideStatus Status { get; init; }
-        public DateTime CreatedAt { get; init; }
+        public DateTime RequestedAt { get; init; }
     }
 }

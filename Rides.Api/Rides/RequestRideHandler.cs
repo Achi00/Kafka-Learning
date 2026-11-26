@@ -10,22 +10,43 @@ namespace Rides.Api.Rides
         private readonly IUnitOfWork _unitOfWork;
         private readonly RideRepository _rideRepository;
         private readonly OutboxRepository _outboxRepository;
+        private readonly TimeProvider _time;
 
-        public RequestRideHandler(IUnitOfWork unitOfWork, RideRepository rideRepository, OutboxRepository outboxRepository)
+        public RequestRideHandler(IUnitOfWork unitOfWork, RideRepository rideRepository, OutboxRepository outboxRepository, TimeProvider time)
         {
             _outboxRepository = outboxRepository;
             _rideRepository = rideRepository;
             _unitOfWork = unitOfWork;
+            _time = time;
         }
 
-        public async Task RequestRideAsync(Ride ride, CancellationToken ct)
+        public async Task<Guid> HandleAsync(RequestRide command, CancellationToken ct)
         {
+            var now = DateTime.UtcNow;
+
+            var ride = new Ride
+            {
+                Id = Guid.NewGuid(),
+                RiderId = command.RiderId,
+                PickupLat = command.PickupLat,
+                PickupLng = command.PickupLng,
+                Status = RideStatus.Requested,
+                RequestedAt = now
+            };
+
+            // event model wich carries ride entity
+            var evt = new RideRequested(
+                EventId: Guid.NewGuid(),
+                RideId: ride.Id,
+                RiderId: ride.RiderId,
+                PickupLat: ride.PickupLat,
+                PickupLng: ride.PickupLng,
+                RequestedAt: new DateTimeOffset(now));
+
+            // whole operation should be single transaction
             await _unitOfWork.BeginAsync(ct);
 
             await _rideRepository.CreateRide(ride);
-
-            // event model wich carries ride entity
-            var evt = new RideRequested(Guid.NewGuid(), ride.Id, ride.RiderId, ride.PickupLat, ride.PickupLng, DateTime.UtcNow);
 
             await _outboxRepository.AddAsync(new OutboxMessage
             {
@@ -37,6 +58,8 @@ namespace Rides.Api.Rides
             });
 
             await _unitOfWork.CommitAsync(ct);
+
+            return ride.Id;
         }
     }
 }
