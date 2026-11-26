@@ -12,5 +12,14 @@ namespace Kafka.Producer.Outbox
         }
 
         public async Task AddAsync(OutboxMessage message)
+        {
+            using var connection = _connectionFactory.CreateConnection();
+
+            const string sql = """
+                INSERT INTO OutboxMessages 
+                    (MessageId, Topic, MessageKey, Type, Payload, CreatedAt, ProcessedAt, Attempts)
+                VALUES ()
+                """;
+        }
     }
 }
