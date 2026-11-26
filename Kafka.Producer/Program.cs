@@ -1,8 +1,7 @@
-﻿using Dapper;
-using Kafka.Producer.BgServices;
+﻿using Kafka.Producer.BgServices;
 using Kafka.Producer.Database;
+using Kafka.Producer.Outbox;
 using Kafka.Shared.Setup;
-using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -15,23 +14,14 @@ var connectionString =
     "Integrated Security=True;" +
     "TrustServerCertificate=True;";
 
-await using var connection = new SqlConnection(connectionString);
-
-await connection.OpenAsync();
-Console.WriteLine("Connected to SQL Server!");
-
-var result = await connection.QuerySingleAsync<int>(
-    "SELECT 1");
-
-Console.WriteLine($"Database returned: {result}");
-
 // producer's singleton services
 builder.Services.AddKafka();
 // simulated bg worker
 builder.Services.AddHostedService<DriverSimulator>();
 // connection factory
-builder.Services.AddSingleton<IDbConnectionFactory>();
+builder.Services.AddSingleton<IDbConnectionFactory>(new SqlConnectionFactory(connectionString));
 // outbox repository
+builder.Services.AddScoped<OutboxRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
