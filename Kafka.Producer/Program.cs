@@ -32,7 +32,7 @@ builder.Services.AddHostedService<DriverSimulator>();
 // connection factory
 builder.Services.AddSingleton<IDbConnectionFactory>();
 // outbox repository
-//builder.Services.AddScoped<>
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
 var host = builder.Build();
