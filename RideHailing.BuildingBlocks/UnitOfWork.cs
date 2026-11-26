@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using RideHailing.BuildingBlocks.Interfaces;
+using System.Data.Common;
 
 namespace Kafka.Producer.Database
 {

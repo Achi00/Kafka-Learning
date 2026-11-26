@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
+using RideHailing.BuildingBlocks.Interfaces;
 using System.Data.Common;
 
 namespace Kafka.Producer.Database

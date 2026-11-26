@@ -1,6 +1,6 @@
 ﻿using System.Data.Common;
 
-namespace Kafka.Producer.Database
+namespace RideHailing.BuildingBlocks.Interfaces
 {
     public interface IUnitOfWork : IAsyncDisposable
     {

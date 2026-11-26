@@ -10,6 +10,7 @@
   </Folder>
   <Folder Name="/Shared/">
     <Project Path="Kafka.Shared/RideHailing.Contracts.csproj" />
+    <Project Path="RideHailing.BuildingBlocks/RideHailing.BuildingBlocks.csproj" Id="a680a580-9ae6-432c-a096-575974500d8d" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path="docker-compose.yml" />
