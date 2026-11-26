@@ -1,7 +1,7 @@
 ﻿using Confluent.Kafka;
 using Confluent.Kafka.Admin;
 
-namespace Kafka.Shared.Setup
+namespace RideHailing.Contracts.Setup
 {
     public static class KafkaConfig
     {

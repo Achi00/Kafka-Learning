@@ -1,4 +1,4 @@
-﻿namespace Kafka.Producer.Models
+﻿namespace DriverSimulator.Models
 {
     public sealed class Ride
     {

@@ -1,18 +1,18 @@
 ﻿using Confluent.Kafka;
-using Kafka.Shared.Setup;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using RideHailing.Contracts.Setup;
 using System.Text.Json;
 
-namespace Kafka.Producer.BgServices
+namespace DriverSimulator.BgServices
 {
-    public sealed class DriverSimulator : BackgroundService
+    public sealed class DriverSimulatorWorker : BackgroundService
     {
         private readonly IProducer<string, string> _producer;
-        private readonly ILogger<DriverSimulator> _logger;
+        private readonly ILogger<DriverSimulatorWorker> _logger;
 
         private readonly Random _random = new();
-        public DriverSimulator(IProducer<string, string> producer, ILogger<DriverSimulator> logger)
+        public DriverSimulatorWorker(IProducer<string, string> producer, ILogger<DriverSimulatorWorker> logger)
         {
             _producer = producer;
             _logger = logger;

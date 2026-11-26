@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 
-namespace Kafka.Shared.Setup
+namespace RideHailing.Contracts.Setup
 {
     public static class KafkaServiceCollectionExtensions
     {

@@ -1,7 +1,8 @@
-﻿using Kafka.Shared.Setup;
+﻿using LocationService.Storege;
 using Microsoft.Extensions.Logging;
+using RideHailing.Contracts.Setup;
 
-namespace Kafka.Consumer.Handlers
+namespace LocationService.Handlers
 {
     // bussines logic
     public sealed class DriverLocationHandler : IDriverLocationHandler

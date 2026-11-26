@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Kafka.Shared.Setup
+namespace RideHailing.Contracts.Setup
 {
     public sealed class KafkaOptions
     {

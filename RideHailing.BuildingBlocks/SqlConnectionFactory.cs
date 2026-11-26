@@ -2,7 +2,7 @@
 using RideHailing.BuildingBlocks.Interfaces;
 using System.Data.Common;
 
-namespace Kafka.Producer.Database
+namespace RideHailing.BuildingBlocks
 {
     public sealed class SqlConnectionFactory : IDbConnectionFactory
     {

@@ -1,5 +1,5 @@
 ﻿using Confluent.Kafka;
-using Kafka.Shared.Setup;
+using RideHailing.Contracts.Setup;
 using System.Globalization;
 using System.Text;
 

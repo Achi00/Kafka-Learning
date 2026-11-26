@@ -1,6 +1,6 @@
-﻿using Kafka.Shared.Setup;
+﻿using RideHailing.Contracts.Setup;
 
-namespace Kafka.Consumer.Storege
+namespace LocationService.Storege
 {
     public sealed class InMemoryDriverLocationStore : IDriverLocationStore
     {

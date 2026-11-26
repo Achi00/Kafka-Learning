@@ -1,10 +1,10 @@
 ﻿using Confluent.Kafka;
-using Kafka.Shared.Setup;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using RideHailing.Contracts.Setup;
 using System.Text;
 
-namespace Kafka.Consumer
+namespace LocationService
 {
     // failed messages
     public sealed class DeadLetterPublisher

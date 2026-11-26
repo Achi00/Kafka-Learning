@@ -1,14 +1,14 @@
 ﻿using Confluent.Kafka;
-using Kafka.Consumer.Handlers;
-using Kafka.Shared.Setup;
+using LocationService.Handlers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using RideHailing.Contracts.Setup;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 
-namespace Kafka.Consumer
+namespace LocationService
 {
     public sealed class DriverLocationConsumer(
         IOptions<KafkaOptions> options,

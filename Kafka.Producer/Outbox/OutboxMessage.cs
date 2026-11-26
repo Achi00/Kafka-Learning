@@ -1,4 +1,4 @@
-﻿namespace Kafka.Producer.Database
+﻿namespace DriverSimulator.Outbox
 {
     public class OutboxMessage
     {

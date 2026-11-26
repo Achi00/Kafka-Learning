@@ -1,6 +1,6 @@
-﻿using Kafka.Shared.Setup;
+﻿using RideHailing.Contracts.Setup;
 
-namespace Kafka.Consumer.Handlers
+namespace LocationService.Handlers
 {
     public interface IDriverLocationHandler
     {

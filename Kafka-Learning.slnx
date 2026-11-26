@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/API/">
+    <Project Path="Rides.Api/Rides.Api.csproj" Id="bae92d46-70e2-470f-8c31-ba5b2f52d360" />
+  </Folder>
   <Folder Name="/Consumers/">
     <Project Path="Kafka.Consumer/LocationService.csproj" />
   </Folder>

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Kafka.Consumer
+namespace LocationService
 {
     public sealed class DriverLocationConsumerOptions
     {

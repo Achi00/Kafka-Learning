@@ -1,11 +1,11 @@
-﻿using Kafka.Producer.BgServices;
-using Kafka.Producer.Database;
-using Kafka.Producer.Outbox;
-using Kafka.Shared.Setup;
+﻿using DriverSimulator.BgServices;
+using DriverSimulator.Outbox;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using RideHailing.BuildingBlocks;
 using RideHailing.BuildingBlocks.Interfaces;
+using RideHailing.Contracts.Setup;
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -18,7 +18,7 @@ var connectionString =
 // producer's singleton services
 builder.Services.AddKafka();
 // simulated bg worker
-builder.Services.AddHostedService<DriverSimulator>();
+builder.Services.AddHostedService<DriverSimulatorWorker>();
 // connection factory
 builder.Services.AddSingleton<IDbConnectionFactory>(new SqlConnectionFactory(connectionString));
 // outbox repository

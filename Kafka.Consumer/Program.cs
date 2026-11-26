@@ -1,11 +1,11 @@
 ﻿using Confluent.Kafka;
-using Kafka.Consumer;
-using Kafka.Consumer.Handlers;
-using Kafka.Consumer.Storege;
-using Kafka.Shared.Setup;
+using LocationService;
+using LocationService.Handlers;
+using LocationService.Storege;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using RideHailing.Contracts.Setup;
 
 var builder = Host.CreateApplicationBuilder(args);
 

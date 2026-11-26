@@ -1,8 +1,7 @@
 ﻿using Dapper;
-using Kafka.Producer.Database;
 using RideHailing.BuildingBlocks.Interfaces;
 
-namespace Kafka.Producer.Outbox
+namespace DriverSimulator.Outbox
 {
     public sealed class OutboxRepository
     {

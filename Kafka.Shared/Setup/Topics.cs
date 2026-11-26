@@ -1,4 +1,4 @@
-﻿namespace Kafka.Shared.Setup
+﻿namespace RideHailing.Contracts.Setup
 {
     public static class Topics
     {
