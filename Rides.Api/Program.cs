@@ -25,6 +25,8 @@ builder.Services.AddScoped<RideRepository>();
 builder.Services.AddScoped<OutboxRepository>();
 builder.Services.AddScoped<RequestRideHandler>();
 
+builder.Services.AddSingleton(TimeProvider.System);
+
 var app = builder.Build();
 
 // unhandled ex to ProblemDetails 500

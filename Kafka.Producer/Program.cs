@@ -11,7 +11,7 @@ var builder = Host.CreateApplicationBuilder(args);
 
 var connectionString =
     "Server=localhost;" +
-    "Database=Kafka_Learning;" +
+    "Database=RideServiceDb;" +
     "Integrated Security=True;" +
     "TrustServerCertificate=True;";
 

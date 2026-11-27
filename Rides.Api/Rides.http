@@ -1,0 +1,31 @@
+@host = https://localhost:7037
+
+### Valid ride request, status code 201
+POST {{host}}/rides
+Content-Type: application/json
+
+{
+  "riderId": "rider-1",
+  "pickupLat": 41.7151,
+  "pickupLng": 44.8271
+}
+
+### Pickup outside Tbilisi, status code 400
+POST {{host}}/rides
+Content-Type: application/json
+
+{
+  "riderId": "rider-1",
+  "pickupLat": 10,
+  "pickupLng": 44.8271
+}
+
+### Missing riderId, status code 400
+POST {{host}}/rides
+Content-Type: application/json
+
+{
+  "riderId": "",
+  "pickupLat": 41.7151,
+  "pickupLng": 44.8271
+}
