@@ -46,14 +46,16 @@ namespace RideHailing.BuildingBlocks.Outbox
             }
         }
 
-        // tries to aquire application level lock
+        // tries to aquire application level lock, only one instance can aquire it others wait
         private static async Task<bool> TryAcquireLockAsync(DbConnection connection)
         {
             var result = await connection.ExecuteScalarAsync<int>("""
             DECLARE @result INT;
             EXEC @result = sp_getapplock
-                @Resource = @Resource, @LockMode = 'Exclusive',
-                @LockOwner = 'Session', @LockTimeout = 0;
+                @Resource = @Resource, 
+                @LockMode = 'Exclusive',
+                @LockOwner = 'Session', 
+                @LockTimeout = 0;
             SELECT @result;
             """, new { Resource = LockName });
 
