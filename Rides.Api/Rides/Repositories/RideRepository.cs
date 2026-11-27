@@ -16,8 +16,8 @@ namespace Rides.Api.Rides.Repositories
         public Task CreateRide(Ride ride)
         {
             const string sql = """
-                INSERT INTO dbo.OutboxMessages (RiderId, PickupLat, PickupLng, Status, RequestedAt)
-                VALUES (@RiderId, @PickupLat, @PickupLng, @Status, @RequestedAt)
+                INSERT INTO dbo.Rides (Id, RiderId, PickupLat, PickupLng, Status, RequestedAt)
+                VALUES (@Id, @RiderId, @PickupLat, @PickupLng, @Status, @RequestedAt)
              """;
 
             var data = new
