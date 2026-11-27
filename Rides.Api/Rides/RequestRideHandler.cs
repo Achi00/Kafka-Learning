@@ -1,6 +1,9 @@
 ﻿using RideHailing.BuildingBlocks.Data.Interfaces;
 using RideHailing.BuildingBlocks.Outbox;
 using RideHailing.Contracts.Setup;
+using Rides.Api.Rides.Enums;
+using Rides.Api.Rides.Models;
+using Rides.Api.Rides.Repositories;
 using System.Text.Json;
 
 namespace Rides.Api.Rides

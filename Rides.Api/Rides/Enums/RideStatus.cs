@@ -1,4 +1,4 @@
-﻿namespace Rides.Api.Rides
+﻿namespace Rides.Api.Rides.Enums
 {
     public enum RideStatus
     {

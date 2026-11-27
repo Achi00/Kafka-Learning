@@ -1,4 +1,6 @@
-﻿namespace Rides.Api.Rides
+﻿using Rides.Api.Rides.Enums;
+
+namespace Rides.Api.Rides.Models
 {
     public sealed class Ride
     {

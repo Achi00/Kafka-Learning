@@ -1,7 +1,8 @@
 ﻿using Dapper;
 using RideHailing.BuildingBlocks.Data.Interfaces;
+using Rides.Api.Rides.Models;
 
-namespace Rides.Api.Rides
+namespace Rides.Api.Rides.Repositories
 {
     public class RideRepository
     {
