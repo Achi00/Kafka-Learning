@@ -37,16 +37,27 @@ namespace RideHailing.BuildingBlocks.Outbox
                     await using var lockConnection = _connectionFactory.CreateConnection();
                     await lockConnection.OpenAsync(stoppingToken);
 
+                    if (!await TryAcquireLockAsync(lockConnection))
+                    {
+                        // another instance is relaying
+                        await Task.Delay(StandbyDelay, stoppingToken);
+                        continue;
+                    }
                 }
-                catch (Exception)
+                catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
                 {
-
-                    throw;
+                    // cancellation requested, normal exit
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Outbox relay failed, retrying");
+                    await Task.Delay(StandbyDelay, stoppingToken);
                 }
             }
         }
 
-        // tries to aquire application level lock, only one instance can aquire it others wait
+        // tries to aquire application level lock, only one instance can aquire it, others wait
         private static async Task<bool> TryAcquireLockAsync(DbConnection connection)
         {
             var result = await connection.ExecuteScalarAsync<int>("""
