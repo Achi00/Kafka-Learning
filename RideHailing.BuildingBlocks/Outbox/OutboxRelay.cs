@@ -43,6 +43,10 @@ namespace RideHailing.BuildingBlocks.Outbox
                         await Task.Delay(StandbyDelay, stoppingToken);
                         continue;
                     }
+
+                    // lock aquired, publishes batch rows to producer
+                    _logger.LogInformation("Acquired outbox relay lock");
+                    await RelayLoopAsync(lockConnection, stoppingToken);
                 }
                 catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
                 {
@@ -71,6 +75,24 @@ namespace RideHailing.BuildingBlocks.Outbox
             """, new { Resource = LockName });
 
             return result >= 0;
+        }
+
+        private async Task RelayLoopAsync(DbConnection connection, CancellationToken ct)
+        {
+            while (!ct.IsCancellationRequested)
+            {
+                // batches n amount of rows, only gets not processed messages, indexed in db, orderd by secuance for continuety
+                var batch = (await connection.QueryAsync<OutboxMessage>("""
+                SELECT TOP (@BatchSize)
+                       Sequence, MessageId, Topic, MessageKey, Type, Payload,
+                       CreatedAt, ProcessedAt, Attempts, LastError
+                FROM dbo.OutboxMessages
+                WHERE ProcessedAt IS NULL
+                ORDER BY Sequence
+                """, new { BatchSize })).ToList();
+
+                
+            }
         }
     }
 }
