@@ -1,6 +1,8 @@
+using Microsoft.Extensions.Options;
 using RideHailing.BuildingBlocks.Data;
 using RideHailing.BuildingBlocks.Data.Interfaces;
 using RideHailing.BuildingBlocks.Outbox;
+using RideHailing.Contracts.Setup;
 using Rides.Api.Rides;
 using Rides.Api.Rides.Endpoints;
 using Rides.Api.Rides.Repositories;
@@ -24,10 +26,16 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<RideRepository>();
 builder.Services.AddScoped<OutboxRepository>();
 builder.Services.AddScoped<RequestRideHandler>();
+// register worker
+builder.Services.AddHostedService<OutboxRelay>();
+builder.Services.AddKafka();
 
 builder.Services.AddSingleton(TimeProvider.System);
 
 var app = builder.Build();
+
+var kafka = app.Services.GetRequiredService<IOptions<KafkaOptions>>().Value;
+await KafkaConfig.EnsureTopicAsync(kafka.BootstrapServers, Topics.RideEvents, Topics.RideEventsPartitions);
 
 // unhandled ex to ProblemDetails 500
 app.UseExceptionHandler();

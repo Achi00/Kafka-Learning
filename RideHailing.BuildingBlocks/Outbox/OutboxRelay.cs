@@ -125,6 +125,7 @@ namespace RideHailing.BuildingBlocks.Outbox
                 }
                 catch (ProduceException<string, string> ex)
                 {
+                    // increment count of attempts on failure, success is attempt 1 as default, save error, avoid oversave limit to 2000 char max
                     await connection.ExecuteAsync("""
                     UPDATE dbo.OutboxMessages
                     SET Attempts = Attempts + 1, LastError = @Error
